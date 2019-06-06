@@ -1,0 +1,16 @@
+# Process
+
+## day 3
+Install framework on my mac. libGDX does not work with jave 10+ so I had to downgrade to java 8, this was harder than I
+anticipated because java automatically installs multiple versions rather than replaces old ones. I used homebrew to install
+java 8 via terminal.
+
+## Day 4
+libGDX works with different "screens" in stead of with XML layout files. These screens implement the fucntional aspect as well
+as the visual aspect of the app. Shapes and text can be drawn on the screens using the render method that you have to 
+make on every screen. Using an "Orhtographic camera" the view that is shown to the user is identified, and within this view
+"shapeRenderers can be used to create shapes, such as the rectangles needed in snake
+<img width="300" alt="Screen Shot 2019-06-06 at 15 15 48" src="https://user-images.githubusercontent.com/47351811/59035658-06994980-886e-11e9-8643-810273d54ff2.png">
+
+In this image you can see a single white rectangle that will be the snakes head.
+In the oncoming days I will focus on creating a grid and moving the square on that grid.
