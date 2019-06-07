@@ -14,3 +14,12 @@ make on every screen. Using an "Orhtographic camera" the view that is shown to t
 
 In this image you can see a single white rectangle that will be the snakes head.
 In the oncoming days I will focus on creating a grid and moving the square on that grid.
+
+## Day 5
+Moving the head over the grid proved quite easy so I went on to having body parts following the head.
+I had to decide on one of two ways of doing this:
+- Having all the individual pieces follow the head in a train like fashion
+- Moving the last body part to the front and leaving the ones in the middle at the same position
+
+I chose to go with the latter option because it requires less movement and thus less actions to execute for the computer
+and less actions for me to program.
