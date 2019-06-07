@@ -17,6 +17,7 @@ public class MyGdxGame extends Game {
 	public void create() {
 		// Set the screen according to the game class
 		this.setScreen(new SnakeGame(this));
+
 	}
 
 	@Override
