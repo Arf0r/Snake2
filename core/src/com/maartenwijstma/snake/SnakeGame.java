@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
+import java.util.ArrayList;
+
 public class SnakeGame implements Screen {
     // Define the width and height of the screen (basic 1080x1920 ratio)
     private static final int width = 1080;
@@ -16,8 +18,9 @@ public class SnakeGame implements Screen {
 
     private static final float moveTime = 0.5F;
     private float timer = moveTime;
-    private int snakeLength = 5;
+    private int bodyLength = 4;
     private String direction = "UP";
+    private ArrayList <SnakeBodySegment> segmentList = new ArrayList<>();
 
     // Make a camera that the user views the screen through
     private OrthographicCamera cam = new OrthographicCamera(width, height);
@@ -56,6 +59,14 @@ public class SnakeGame implements Screen {
                 }
             }
         }));
+
+
+        int counter = bodyLength * blockSize;
+        for (int i = 0; i < bodyLength; i++){
+            SnakeBodySegment segment = new SnakeBodySegment(snakeXPos, snakeYPos - counter);
+            this.segmentList.add(segment);
+            counter -= blockSize;
+        }
     }
 
     @Override
@@ -72,27 +83,37 @@ public class SnakeGame implements Screen {
         if (timer <= 0) {
             timer = moveTime;
 
+            this.segmentList.remove(0);
             switch(direction){
                 case "RIGHT":
                     snakeXPos += blockSize;
+                    SnakeBodySegment segment = new SnakeBodySegment(snakeXPos - blockSize, snakeYPos);
+                    this.segmentList.add(segment);
                     break;
                 case "UP":
                     snakeYPos += blockSize;
+                    SnakeBodySegment segment2 = new SnakeBodySegment(snakeXPos, snakeYPos - blockSize);
+                    this.segmentList.add(segment2);
                     break;
                 case "DOWN":
                     snakeYPos -= blockSize;
+                    SnakeBodySegment segment3 = new SnakeBodySegment(snakeXPos, snakeYPos + blockSize);
+                    this.segmentList.add(segment3);
                     break;
                 case "LEFT":
                     snakeXPos -= blockSize;
+                    SnakeBodySegment segment4 = new SnakeBodySegment(snakeXPos + blockSize, snakeYPos);
+                    this.segmentList.add(segment4);
                     break;
-
             }
-
         }
         Gdx.gl.glClearColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, Color.BLACK.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         snakeHead.draw(snakeXPos, snakeYPos, blockSize);
 
+        for (int i = 0; i < this.segmentList.size(); i++) {
+            segmentList.get(i).drawbody(blockSize);
+        }
     }
 
     @Override
