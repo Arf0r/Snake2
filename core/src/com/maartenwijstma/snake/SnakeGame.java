@@ -5,13 +5,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.util.ArrayList;
 
 public class SnakeGame implements Screen {
     // Define the width and height of the screen (basic 1080x1920 ratio)
-    private static final int width = 1080;
-    private static final int height = 1920;
+    private static final int width = Gdx.graphics.getWidth();
+    private static final int height = Gdx.graphics.getHeight();
     private static final int blockSize = 80;
     private int snakeXPos = 5 * blockSize;
     private int snakeYPos = 10 * blockSize;
@@ -21,6 +22,10 @@ public class SnakeGame implements Screen {
     private int bodyLength = 4;
     private String direction = "UP";
     private ArrayList <SnakeBodySegment> segmentList = new ArrayList<>();
+    private enum STATE {
+        PLAYING, GAME_OVER
+    }
+    private STATE state = STATE.PLAYING;
 
     // Make a camera that the user views the screen through
     private OrthographicCamera cam = new OrthographicCamera(width, height);
@@ -30,6 +35,7 @@ public class SnakeGame implements Screen {
     public SnakeGame(MyGdxGame SnakeGame) {
         // Construct the camera with the given width and height (false makes sure y values more up)
         cam.setToOrtho(false, width, height);
+
 
         Gdx.input.setInputProcessor(new GestureListener(new GestureListener.DirectionListener() {
             @Override
@@ -73,6 +79,8 @@ public class SnakeGame implements Screen {
 
     }
 
+
+
     @Override
     public void show() {
 
@@ -80,13 +88,23 @@ public class SnakeGame implements Screen {
 
     @Override
     public void render(float delta) {
-        timer -= delta;
-        if (timer <= 0) {
-            timer = moveTime;
-            checkApple();
-            move();
+        switch (state) {
+            case PLAYING: {
+                Gdx.app.debug("mytag", String.valueOf(width));
+                timer -= delta;
+                if (timer <= 0) {
+                    timer = moveTime;
+                    checkApple();
+                    move();
+                }
+                draw();
+            }
+            break;
+            case GAME_OVER: {
+
+            }
+            break;
         }
-        draw();
 
     }
 
@@ -133,11 +151,28 @@ public class SnakeGame implements Screen {
                 break;
         }
 
+        checkGameOver();
+    }
+
+    public boolean checkGameOver(){
+        for (int i = 0; i < segmentList.size(); i++) {
+            if (segmentList.get(i).getXPosition() == snakeXPos && segmentList.get(i).getYPosition() == snakeYPos){
+                state = STATE.GAME_OVER;
+            }
+        }
+        if (snakeXPos >= Gdx.graphics.getWidth()) {
+            state = STATE.GAME_OVER;
+        }
+        if (snakeYPos >= Gdx.graphics.getHeight()) {
+            state = STATE.GAME_OVER;
+        }
+        return false;
     }
 
     public void draw(){
         Gdx.gl.glClearColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, Color.BLACK.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         snakeHead.draw(snakeXPos, snakeYPos, blockSize);
 
         for (int i = 0; i < this.segmentList.size(); i++) {

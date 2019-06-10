@@ -13,7 +13,13 @@ make on every screen. Using an "Orhtographic camera" the view that is shown to t
 <img width="300" alt="Screen Shot 2019-06-06 at 15 15 48" src="https://user-images.githubusercontent.com/47351811/59035658-06994980-886e-11e9-8643-810273d54ff2.png">
 
 In this image you can see a single white rectangle that will be the snakes head.
-In the oncoming days I will focus on creating a grid and moving the square on that grid.
+
+When the snake starts moving, I will have to keep removing and readding the snakes head and all the body parts,
+this however can be quite tricky because not only do you need to know where the head is now to draw it, but you
+also need to know where the head was to remove it from that position. To circumvent this I chose to instead have the
+screen clear out everything that is drawn on it every single "tick" and have it draw on the current situation
+every single "tick" as well. (this is done in the render function which gets called 60 times per second.
+this effectively means my game now runs at 60 FPS.)
 
 ## Day 5
 Moving the head over the grid proved quite easy so I went on to having body parts following the head.
@@ -23,3 +29,16 @@ I had to decide on one of two ways of doing this:
 
 I chose to go with the latter option because it requires less movement and thus less actions to execute for the computer
 and less actions for me to program.
+
+#### Weekend
+
+## Day 8
+Today I want the snake to be able to die when it either touches itself or hits the screen walls.
+To do this, libGDX has a useful tool: the enum GAME STATE.
+
+The real problem arises when I found that the grid over which the snake moves does not perfectly
+fit the screen, and even I hardcode it to be, I suspect that it will not fit on differently sized phones.
+
+After some research I have found that libGDX offers something called a Viewport which is a way of
+managing the Orthographic camera. I still have to find out how it exactly works but it should fix the problem.
+

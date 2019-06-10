@@ -16,8 +16,8 @@ public class Apple {
     public Apple(int blockSize) {
         Random randX = new Random();
         Random randY = new Random();
-        int randomx = randX.nextInt(28);
-        int randomy = randY.nextInt(49);
+        int randomx = randX.nextInt(1080/ blockSize + 1);
+        int randomy = randY.nextInt(1920/ blockSize + 1);
 
         this.Xposition = blockSize * randomx;
         this.Yposition = blockSize * randomy;
