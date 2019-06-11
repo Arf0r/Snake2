@@ -42,3 +42,13 @@ fit the screen, and even I hardcode it to be, I suspect that it will not fit on 
 After some research I have found that libGDX offers something called a Viewport which is a way of
 managing the Orthographic camera. I still have to find out how it exactly works but it should fix the problem.
 
+## Day 9
+I implemented the viewport so that the game can be played on screens with different sizes and added a white
+border to the outside of the playing field. The game itself is now almost finished however there are a couple
+tiny visual bugs that are hard to get rid off:
+- When the snake dies, in stead of showing the snake lying still, the last and first segment of the body
+start spacing out.
+- When an apple is eaten the apple is showed in stead of the head when the snake goes over it, and only when
+the head has passed the snake does the apple disappear, making the game feel like its lagging.
+- Finally I still need to add a score counter and a message when the game is over
+

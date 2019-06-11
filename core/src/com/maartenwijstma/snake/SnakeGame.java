@@ -1,18 +1,25 @@
 package com.maartenwijstma.snake;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.awt.Shape;
 import java.util.ArrayList;
+
+import sun.applet.Main;
 
 public class SnakeGame implements Screen {
     // Define the width and height of the screen (basic 1080x1920 ratio)
-    private static final int width = Gdx.graphics.getWidth();
-    private static final int height = Gdx.graphics.getHeight();
+    private static final float WORLD_WIDTH = 1080;
+    private static final float WORLD_HEIGHT = 1920;
+    private Viewport viewport;
     private static final int blockSize = 80;
     private int snakeXPos = 5 * blockSize;
     private int snakeYPos = 10 * blockSize;
@@ -28,13 +35,16 @@ public class SnakeGame implements Screen {
     private STATE state = STATE.PLAYING;
 
     // Make a camera that the user views the screen through
-    private OrthographicCamera cam = new OrthographicCamera(width, height);
+    private OrthographicCamera cam = new OrthographicCamera();
     private SnakeHead snakeHead = new SnakeHead();
     private Apple apple;
+    ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private int length;
 
     public SnakeGame(MyGdxGame SnakeGame) {
         // Construct the camera with the given width and height (false makes sure y values more up)
-        cam.setToOrtho(false, width, height);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, cam);
+        viewport.apply();
 
 
         Gdx.input.setInputProcessor(new GestureListener(new GestureListener.DirectionListener() {
@@ -72,14 +82,13 @@ public class SnakeGame implements Screen {
         for (int i = 0; i < bodyLength; i++){
             SnakeBodySegment segment = new SnakeBodySegment(snakeXPos, snakeYPos - counter);
             this.segmentList.add(segment);
+            Gdx.app.log("tagagag", "2");
             counter -= blockSize;
         }
 
         this.apple = new Apple(blockSize);
 
     }
-
-
 
     @Override
     public void show() {
@@ -88,9 +97,11 @@ public class SnakeGame implements Screen {
 
     @Override
     public void render(float delta) {
+        cam.update();
+        viewport.apply();
         switch (state) {
             case PLAYING: {
-                Gdx.app.debug("mytag", String.valueOf(width));
+                Gdx.app.debug("mytag", String.valueOf(WORLD_WIDTH));
                 timer -= delta;
                 if (timer <= 0) {
                     timer = moveTime;
@@ -101,7 +112,6 @@ public class SnakeGame implements Screen {
             }
             break;
             case GAME_OVER: {
-
             }
             break;
         }
@@ -155,15 +165,17 @@ public class SnakeGame implements Screen {
     }
 
     public boolean checkGameOver(){
+
         for (int i = 0; i < segmentList.size(); i++) {
+            Gdx.app.log("tagagag", "3");
             if (segmentList.get(i).getXPosition() == snakeXPos && segmentList.get(i).getYPosition() == snakeYPos){
                 state = STATE.GAME_OVER;
             }
         }
-        if (snakeXPos >= Gdx.graphics.getWidth()) {
+        if (snakeXPos >= viewport.getWorldWidth() || snakeXPos < 0) {
             state = STATE.GAME_OVER;
         }
-        if (snakeYPos >= Gdx.graphics.getHeight()) {
+        if (snakeYPos >= viewport.getWorldHeight() || snakeYPos <= 0) {
             state = STATE.GAME_OVER;
         }
         return false;
@@ -172,18 +184,32 @@ public class SnakeGame implements Screen {
     public void draw(){
         Gdx.gl.glClearColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, Color.BLACK.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.app.log("tagagag", "4");
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(1,1,1,1);
+        shapeRenderer.rect(0,0,WORLD_WIDTH,WORLD_HEIGHT);
+        shapeRenderer.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0,0,0,0);
+        shapeRenderer.rect(5,5,WORLD_WIDTH - 10,WORLD_HEIGHT-10);
+        shapeRenderer.end();
 
         snakeHead.draw(snakeXPos, snakeYPos, blockSize);
 
+        this.apple.drawApple(blockSize);
         for (int i = 0; i < this.segmentList.size(); i++) {
             segmentList.get(i).drawbody(blockSize);
+            Gdx.app.log("tagagag", "5");
         }
-        this.apple.drawApple(blockSize);
+
 
     }
 
     @Override
     public void resize(int width, int height) {
+        Gdx.app.log("tagagag", "6");
+        viewport.update(width, height);
 
     }
 
