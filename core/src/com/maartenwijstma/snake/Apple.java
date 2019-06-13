@@ -13,11 +13,11 @@ public class Apple {
     private int Yposition;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-    public Apple(int blockSize) {
+    public Apple(int blockSize, int width, int height) {
         Random randX = new Random();
         Random randY = new Random();
-        int randomx = randX.nextInt(1080/ blockSize + 1);
-        int randomy = randY.nextInt(1920/ blockSize + 1);
+        int randomx = randX.nextInt(width/ blockSize + 1);
+        int randomy = randY.nextInt(height/ blockSize + 1);
 
         this.Xposition = blockSize * randomx;
         this.Yposition = blockSize * randomy;

@@ -6,25 +6,25 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.awt.Shape;
 import java.util.ArrayList;
 
-import sun.applet.Main;
 
 public class SnakeGame implements Screen {
-    // Define the width and height of the screen (basic 1080x1920 ratio)
-    private static final float WORLD_WIDTH = 1080;
-    private static final float WORLD_HEIGHT = 1920;
+    private static final float WORLD_WIDTH = Gdx.graphics.getWidth();
+    private static final float WORLD_HEIGHT = Gdx.graphics.getHeight();
     private Viewport viewport;
-    private static final int blockSize = 80;
+    private static final int blockSize = 60;
     private int snakeXPos = 5 * blockSize;
     private int snakeYPos = 10 * blockSize;
 
-    private static final float moveTime = 0.2F;
+    private static final float moveTime = 0.12F;
     private float timer = moveTime;
     private int bodyLength = 4;
     private String direction = "UP";
@@ -39,12 +39,20 @@ public class SnakeGame implements Screen {
     private SnakeHead snakeHead = new SnakeHead();
     private Apple apple;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private int length;
+    private int score = 5;
+    private String ScoreName = "score: 5";
+    private SpriteBatch batch;
+    BitmapFont font  = new BitmapFont();
+
+
 
     public SnakeGame(MyGdxGame SnakeGame) {
         // Construct the camera with the given width and height (false makes sure y values more up)
+
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, cam);
         viewport.apply();
+        Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch = new SpriteBatch();
 
 
         Gdx.input.setInputProcessor(new GestureListener(new GestureListener.DirectionListener() {
@@ -86,7 +94,7 @@ public class SnakeGame implements Screen {
             counter -= blockSize;
         }
 
-        this.apple = new Apple(blockSize);
+        this.apple = new Apple(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT));
 
     }
 
@@ -109,6 +117,11 @@ public class SnakeGame implements Screen {
                     move();
                 }
                 draw();
+                batch.begin();
+                font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+                font.getData().setScale(2, 2);
+                font.draw(batch, ScoreName, WORLD_WIDTH/2 - 40, WORLD_HEIGHT - 10);
+                batch.end();
             }
             break;
             case GAME_OVER: {
@@ -137,6 +150,8 @@ public class SnakeGame implements Screen {
         }
         else{
             this.apple.newApple(blockSize);
+            score++;
+            ScoreName = "length: " + score;
         }
         switch(direction){
             case "RIGHT":
@@ -175,7 +190,7 @@ public class SnakeGame implements Screen {
         if (snakeXPos >= viewport.getWorldWidth() || snakeXPos < 0) {
             state = STATE.GAME_OVER;
         }
-        if (snakeYPos >= viewport.getWorldHeight() || snakeYPos <= 0) {
+        if (snakeYPos >= viewport.getWorldHeight() || snakeYPos < 0) {
             state = STATE.GAME_OVER;
         }
         return false;
@@ -202,13 +217,15 @@ public class SnakeGame implements Screen {
             segmentList.get(i).drawbody(blockSize);
             Gdx.app.log("tagagag", "5");
         }
+    }
 
+    private void drawScore() {
+        String scoreString = "Score: " + score;
 
     }
 
     @Override
     public void resize(int width, int height) {
-        Gdx.app.log("tagagag", "6");
         viewport.update(width, height);
 
     }
