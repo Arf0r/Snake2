@@ -20,7 +20,7 @@ public class SnakeGame implements Screen {
     private static final float WORLD_WIDTH = Gdx.graphics.getWidth();
     private static final float WORLD_HEIGHT = Gdx.graphics.getHeight();
     private Viewport viewport;
-    private static final int blockSize = 60;
+    private static final int blockSize = 80;
     private int snakeXPos = 5 * blockSize;
     private int snakeYPos = 10 * blockSize;
 
@@ -43,18 +43,21 @@ public class SnakeGame implements Screen {
     private String ScoreName = "score: 5";
     private SpriteBatch batch;
     BitmapFont font  = new BitmapFont();
+    private Wormholes wormholes;
 
 
 
     public SnakeGame(MyGdxGame SnakeGame) {
-        // Construct the camera with the given width and height (false makes sure y values more up)
-
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, cam);
         viewport.apply();
         Matrix4 normalProjection = new Matrix4().setToOrtho2D(0,0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch = new SpriteBatch();
+        Swipe();
+        initializeSnake();
 
+    }
 
+    public void Swipe(){
         Gdx.input.setInputProcessor(new GestureListener(new GestureListener.DirectionListener() {
             @Override
             public void onUp() {
@@ -85,7 +88,9 @@ public class SnakeGame implements Screen {
             }
         }));
 
+    }
 
+    public void initializeSnake() {
         int counter = bodyLength * blockSize;
         for (int i = 0; i < bodyLength; i++){
             SnakeBodySegment segment = new SnakeBodySegment(snakeXPos, snakeYPos - counter);
@@ -95,6 +100,7 @@ public class SnakeGame implements Screen {
         }
 
         this.apple = new Apple(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT));
+        this.wormholes = new Wormholes(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT));
 
     }
 
@@ -109,19 +115,15 @@ public class SnakeGame implements Screen {
         viewport.apply();
         switch (state) {
             case PLAYING: {
-                Gdx.app.debug("mytag", String.valueOf(WORLD_WIDTH));
                 timer -= delta;
                 if (timer <= 0) {
                     timer = moveTime;
                     checkApple();
                     move();
                 }
-                draw();
-                batch.begin();
-                font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-                font.getData().setScale(2, 2);
-                font.draw(batch, ScoreName, WORLD_WIDTH/2 - 40, WORLD_HEIGHT - 10);
-                batch.end();
+                drawBoard();
+                drawSnakeAppleWormhole();
+
             }
             break;
             case GAME_OVER: {
@@ -149,7 +151,7 @@ public class SnakeGame implements Screen {
             this.segmentList.remove(0);
         }
         else{
-            this.apple.newApple(blockSize);
+            this.apple.newApple(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT), segmentList);
             score++;
             ScoreName = "length: " + score;
         }
@@ -196,7 +198,7 @@ public class SnakeGame implements Screen {
         return false;
     }
 
-    public void draw(){
+    public void drawBoard(){
         Gdx.gl.glClearColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, Color.BLACK.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.app.log("tagagag", "4");
@@ -210,13 +212,24 @@ public class SnakeGame implements Screen {
         shapeRenderer.rect(5,5,WORLD_WIDTH - 10,WORLD_HEIGHT-10);
         shapeRenderer.end();
 
+        batch.begin();
+        font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        font.getData().setScale(2, 2);
+        font.draw(batch, ScoreName, WORLD_WIDTH/2 - 40, WORLD_HEIGHT - 10);
+        batch.end();
+    }
+
+    public void drawSnakeAppleWormhole(){
         snakeHead.draw(snakeXPos, snakeYPos, blockSize);
 
-        this.apple.drawApple(blockSize);
         for (int i = 0; i < this.segmentList.size(); i++) {
             segmentList.get(i).drawbody(blockSize);
-            Gdx.app.log("tagagag", "5");
         }
+
+        this.apple.drawApple(blockSize);
+
+        this.wormholes.drawWormhole(blockSize);
+
     }
 
     private void drawScore() {

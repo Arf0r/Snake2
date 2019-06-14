@@ -57,3 +57,9 @@ the head has passed the snake does the apple disappear, making the game feel lik
 I added a score counter and fixed a bug that made the apple spawn outside of the playing field, also
 decided on adding some extra features to my game of snake like wormholes and golden apples and drew out
 a UML on how to add them
+
+## Day 12
+I added the wormholes, however they are not yet functional. I also fixed a bug where the apple could
+spawn underneath the snake, it does however use a pretty big for loop that has to loop over all the segments
+of the snakes body to check if the apple is underneath it. I hope this doesnt make the game slow when the
+snake gets to a big size but I fear it will so I have to think of an alternative solution.
