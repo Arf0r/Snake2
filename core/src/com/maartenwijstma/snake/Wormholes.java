@@ -39,5 +39,21 @@ public class Wormholes {
         shapeRenderer.end();
 
     }
+
+    public int getWorm1X() {
+        return worm1X;
+    }
+
+    public int getWorm1Y() {
+        return worm1Y;
+    }
+
+    public int getWorm2X() {
+        return worm2X;
+    }
+
+    public int getWorm2Y() {
+        return worm2Y;
+    }
 }
 

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class SnakeGame implements Screen {
@@ -118,9 +119,10 @@ public class SnakeGame implements Screen {
                 timer -= delta;
                 if (timer <= 0) {
                     timer = moveTime;
-                    checkApple();
                     move();
                 }
+                checkApple();
+                checkWormhole();
                 drawBoard();
                 drawSnakeAppleWormhole();
 
@@ -131,6 +133,32 @@ public class SnakeGame implements Screen {
             break;
         }
 
+    }
+
+    public void goldenAppleTimer(float delta){
+        timer -= delta;
+        if (timer <= 0) {
+            Random rand = new Random();
+            int time = rand.nextInt(120);
+            timer = time;
+            move();
+        }
+    }
+    public void checkWormhole() {
+        int wormhole1x = this.wormholes.getWorm1X();
+        int wormhole1y = this.wormholes.getWorm1Y();
+        int wormhole2x = this.wormholes.getWorm2X();
+        int wormhole2y = this.wormholes.getWorm2Y();
+
+        if (wormhole1x == snakeXPos && wormhole1y == snakeYPos){
+            snakeXPos = wormhole2x;
+            snakeYPos = wormhole2y;
+        }
+
+        if (wormhole2x == snakeXPos && wormhole2y == snakeYPos){
+            snakeXPos = wormhole1x;
+            snakeYPos = wormhole1y;
+        }
     }
 
     private boolean checkApple() {
