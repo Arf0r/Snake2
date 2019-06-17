@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.badlogic.gdx.Input.Keys.F;
+
 
 public class SnakeGame implements Screen {
     private static final float WORLD_WIDTH = Gdx.graphics.getWidth();
@@ -25,7 +27,7 @@ public class SnakeGame implements Screen {
     private int snakeXPos = 5 * blockSize;
     private int snakeYPos = 10 * blockSize;
 
-    private static final float moveTime = 0.12F;
+    private static final float moveTime = 0.5F;
     private float timer = moveTime;
     private int bodyLength = 4;
     private String direction = "UP";
@@ -34,6 +36,8 @@ public class SnakeGame implements Screen {
         PLAYING, GAME_OVER
     }
     private STATE state = STATE.PLAYING;
+    private float timeAux;
+    private Random rand = new Random();
 
     // Make a camera that the user views the screen through
     private OrthographicCamera cam = new OrthographicCamera();
@@ -45,6 +49,7 @@ public class SnakeGame implements Screen {
     private SpriteBatch batch;
     BitmapFont font  = new BitmapFont();
     private Wormholes wormholes;
+    private GoldenApple goldenApple;
 
 
 
@@ -101,6 +106,7 @@ public class SnakeGame implements Screen {
         }
 
         this.apple = new Apple(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT));
+        this.goldenApple = new GoldenApple();
         this.wormholes = new Wormholes(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT));
 
     }
@@ -121,7 +127,18 @@ public class SnakeGame implements Screen {
                     timer = moveTime;
                     move();
                 }
+
+                int random = rand.nextInt(120);
+                if (timeAux == random){
+                    this.goldenApple.newGoldenApple(blockSize, Math.round(WORLD_WIDTH), Math.round(WORLD_HEIGHT), segmentList);
+                    timeAux = 0;
+                    random  = rand.nextInt(120);
+                }
+                else{
+                    timeAux += delta;
+                }
                 checkApple();
+                checkGoldenApple(delta);
                 checkWormhole();
                 drawBoard();
                 drawSnakeAppleWormhole();
@@ -135,15 +152,6 @@ public class SnakeGame implements Screen {
 
     }
 
-    public void goldenAppleTimer(float delta){
-        timer -= delta;
-        if (timer <= 0) {
-            Random rand = new Random();
-            int time = rand.nextInt(120);
-            timer = time;
-            move();
-        }
-    }
     public void checkWormhole() {
         int wormhole1x = this.wormholes.getWorm1X();
         int wormhole1y = this.wormholes.getWorm1Y();
@@ -161,7 +169,7 @@ public class SnakeGame implements Screen {
         }
     }
 
-    private boolean checkApple() {
+    private void checkApple() {
         Boolean appleEaten = false;
         int appleX = this.apple.getXposition();
         int appleY = this.apple.getYposition();
@@ -170,11 +178,6 @@ public class SnakeGame implements Screen {
             appleEaten = true;
         }
 
-        return appleEaten;
-    }
-
-    public void move(){
-        Boolean appleEaten = checkApple();
         if (!appleEaten) {
             this.segmentList.remove(0);
         }
@@ -183,6 +186,23 @@ public class SnakeGame implements Screen {
             score++;
             ScoreName = "length: " + score;
         }
+    }
+
+    private void checkGoldenApple(float delta){
+        Boolean goldenAppleEaten = false;
+        int goldenAppleX = this.goldenApple.getXposition();
+        int goldenAppleY = this.goldenApple.getYposition();
+
+        if (goldenAppleX == snakeXPos && goldenAppleY == snakeYPos){
+            goldenAppleEaten = true;
+        }
+
+        if (goldenAppleEaten){
+            for
+        }
+    }
+
+    public void move(){
         switch(direction){
             case "RIGHT":
                 snakeXPos += blockSize;
@@ -229,7 +249,6 @@ public class SnakeGame implements Screen {
     public void drawBoard(){
         Gdx.gl.glClearColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, Color.BLACK.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.app.log("tagagag", "4");
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(1,1,1,1);
@@ -255,13 +274,8 @@ public class SnakeGame implements Screen {
         }
 
         this.apple.drawApple(blockSize);
-
+        this.goldenApple.drawGoldenApple(blockSize);
         this.wormholes.drawWormhole(blockSize);
-
-    }
-
-    private void drawScore() {
-        String scoreString = "Score: " + score;
 
     }
 

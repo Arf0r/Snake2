@@ -63,3 +63,8 @@ I added the wormholes, however they are not yet functional. I also fixed a bug w
 spawn underneath the snake, it does however use a pretty big for loop that has to loop over all the segments
 of the snakes body to check if the apple is underneath it. I hope this doesnt make the game slow when the
 snake gets to a big size but I fear it will so I have to think of an alternative solution.
+
+#### weekend
+
+## Day 15
+Started implementing the golden apple. I'm having trouble getting timers to work properly

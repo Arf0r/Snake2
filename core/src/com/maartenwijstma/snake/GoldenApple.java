@@ -10,14 +10,7 @@ public class GoldenApple {
     private int Yposition;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-    public GoldenApple(int blockSize, int width, int height) {
-        Random randX = new Random();
-        Random randY = new Random();
-        int randomx = randX.nextInt(width/ blockSize + 1);
-        int randomy = randY.nextInt(height/ blockSize + 1);
-
-        this.Xposition = blockSize * randomx;
-        this.Yposition = blockSize * randomy;
+    public GoldenApple() {
     }
 
     public void newGoldenApple(int blockSize, int width, int height, ArrayList<SnakeBodySegment> segmentList){
@@ -45,7 +38,7 @@ public class GoldenApple {
 
     public void drawGoldenApple(int blockSize){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(1,0,0,1);
+        shapeRenderer.setColor(1,1,0,1);
         shapeRenderer.rect(this.Xposition,this.Yposition,blockSize-5,blockSize-5);
         shapeRenderer.end();
     }
